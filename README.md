@@ -1,10 +1,8 @@
-# codestats
+# get data from here
 
-A Clojure library designed to ... well, that part is up to you.
+http://www1.toronto.ca/wps/portal/contentonly?vgnextoid=ca20256c54ea4310VgnVCM1000003dd60f89RCRD
 
-## Usage
-
-FIXME
+# unzip and copy to the resources folder
 
 ## License
 
