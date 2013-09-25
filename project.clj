@@ -9,4 +9,5 @@
                  [criterium "0.4.2"]]
   :profile {:dev {:dependencies [[expectations "1.4.52"]]}}
   :plugins [[lein-autoexpect "1.0"]]
-  :jvm-opts ["-Xmx1g"] )
+  :jvm-opts ["-Xmx1g"]
+  :main contest.core)
