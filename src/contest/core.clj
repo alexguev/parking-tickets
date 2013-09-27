@@ -21,19 +21,33 @@
     (.putAll m)))
 
 (defn sort-parking-tickets [file]
+
+  (defn update-set-fine-amount [^java.util.Map m ^String street-name ^long set-fine-amount]
+    (when-let [v (.putIfAbsent m street-name set-fine-amount)]
+      (.put m street-name (+ v set-fine-amount)))
+    m)
+
+  (defn merge-maps [ma mb]
+    (reduce (fn [m [k v]] (update-set-fine-amount m k v)) ma mb))
+
   (defn reduce-parking-tickets
     ([m {:keys [set-fine-amount street-name]}]
-     (update-in m [street-name] (fn [v] (if (nil? v) set-fine-amount (+ v set-fine-amount))))))
+     (update-set-fine-amount m street-name set-fine-amount)))
+
   (defn combine
-    ([] {})
-    ([ma mb] (merge-with + ma mb)))
+    ([] (java.util.HashMap. 512))
+    ([ma mb] (merge-maps ma mb)))
+
   (->> (rest (iota/seq file))
        (r/map parse)
-       (r/filter (comp not nil? :set-fine-amount))
-       (r/filter (comp not empty? :street-name))
+       (r/filter (or (comp not nil? :set-fine-amount) (comp not empty? :street-name)))
        (r/fold combine reduce-parking-tickets)
        (tree-map)))
 
-(time (sort-parking-tickets "./resources/Parking_Tags_Data_2012.csv"))
+(defn -main [& args]
+  (time (sort-parking-tickets "./resources/Parking_Tags_Data_2012.csv")))
+
+;(-main)
+
 
 
