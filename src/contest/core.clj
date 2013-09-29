@@ -31,11 +31,9 @@
 (defn sort-parking-tickets [file]
 
   (defn add-to-set-fine-amount [^java.util.Map m street-name set-fine-amount]
-    (if (or (empty? street-name) (nil? set-fine-amount))
-      (if-let [v (.get m street-name)]
+    (if-let [v (.get m street-name)]
         (doto m (.put street-name (+ v set-fine-amount)))
-        (doto m (.put street-name set-fine-amount)))
-      m))
+        (doto m (.put street-name set-fine-amount))))
 
   (defn merge-maps [ma mb]
     (reduce (fn [m [k v]] (add-to-set-fine-amount m k v)) mb ma))
@@ -50,6 +48,7 @@
 
   (->> (rest (iota/seq file))
        (r/map parse)
+       (r/filter (fn [[street-name set-fine-amount]] (not (or (empty? street-name) (nil? set-fine-amount)))))
        (r/fold combine reduce-parking-tickets)
        (tree-map)))
 
