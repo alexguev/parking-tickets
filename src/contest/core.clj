@@ -3,6 +3,7 @@
             [clojure.string :as s]
             [iota :as iota]))
 
+
 (defn extract-street-name [location1]
     (-> location1
         (s/replace #"\s(NORTH|SOUTH|EAST|WEST|E|W|N|S)$" "")
