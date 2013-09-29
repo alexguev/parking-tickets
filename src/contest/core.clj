@@ -3,12 +3,18 @@
             [clojure.string :as s]
             [iota :as iota]))
 
-(defn extract-street-name [location1]
-    (-> location1
-        (s/replace #"\s(NORTH|SOUTH|EAST|WEST|E|W|N|S)$" "")
-        (s/replace #"\s(ST|STREET|AV|AVE|COURT|CRT|CT|RD)$" "")
-        (s/replace #"^\s*[\"\-!#'\(%*$\./]*" "")
-        (s/replace #"^\s*([\d\.\-/!$']+[ABC]*\s*)+" "")))
+(def suffixes #{"E" "W" "N" "S" "NORTH" "SOUTH" "EAST" "WEST"
+                "ST" "CT" "RD" "AV" "AVE" "CRT" "STREET" "COURT"})
+
+(defn extract-street-name [^String location1]
+  (let [^StringBuilder sb (StringBuilder.)
+        parts (s/split location1 #"\s+")]
+    (doseq [part parts]
+      (when-not (or (re-find #"\d" part) (and (> (.length sb) 0) (contains? suffixes part)))
+        (.append sb part)
+        (.append sb " ")))
+    (when (> (.length sb) 0) (.setLength sb (dec (.length sb))))
+    (.toString sb)))
 
 (defn parse [line]
   (let [parts (s/split line #",")]
@@ -49,12 +55,3 @@
   (time (sort-parking-tickets "./resources/Parking_Tags_Data_2012.csv")))
 
 (-main)
-
-
-
-
-
-
-
-
-
