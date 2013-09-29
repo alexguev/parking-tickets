@@ -40,6 +40,7 @@
 
   (->> (rest (iota/seq file))
        (r/map parse)
+       (r/filter (fn [[street-name set-fine-amount]] (not (or (empty? street-name) (nil? set-fine-amount)))))
        (r/fold combinef reducef)
        (tree-map)))
 
