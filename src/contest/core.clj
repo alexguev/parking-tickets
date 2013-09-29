@@ -32,7 +32,7 @@
 
   (defn reducef
     ([m [street-name set-fine-amount]]
-     (update-in m [street-name] (fn [v] (if (nil? v) set-fine-amount (+ v set-fine-amount))))))
+     (update-in m [street-name] (fnil #(+ % set-fine-amount) 0))))
 
   (defn combinef
     ([] {})
