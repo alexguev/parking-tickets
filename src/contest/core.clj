@@ -31,9 +31,11 @@
 (defn sort-parking-tickets [file]
 
   (defn add-to-set-fine-amount [^java.util.Map m street-name set-fine-amount]
-    (if-let [v (.get m street-name)]
-      (doto m (.put street-name (+ v set-fine-amount)))
-      (doto m (.put street-name set-fine-amount))))
+    (if (or (empty? street-name) (nil? set-fine-amount))
+      (if-let [v (.get m street-name)]
+        (doto m (.put street-name (+ v set-fine-amount)))
+        (doto m (.put street-name set-fine-amount)))
+      m))
 
   (defn merge-maps [ma mb]
     (reduce (fn [m [k v]] (add-to-set-fine-amount m k v)) mb ma))
